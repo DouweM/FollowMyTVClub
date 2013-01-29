@@ -1,0 +1,23 @@
+.markify .row .episode-nr-wrapper.multi {
+  padding: 0;
+  line-height: 16px;
+}
+
+.markify .row .episode-nr-wrapper.multi .episode-nr {
+  margin: 5px 0;
+}
+
+.markify .row .episode-nr-wrapper.multi .unwatched-count {
+  text-align: center;
+  width: 44%;
+  float: right;
+  color: #000;
+  font-weight: bold;
+  padding: 5px 0;
+  font-size: 1.4em;
+}
+
+.split-content .item-teaser .rating-wrap:nth-last-child(2) {
+  clear: right;
+  margin-top: 5px;
+}

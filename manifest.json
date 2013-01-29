@@ -1,0 +1,36 @@
+{
+  "name":             "FollowMyTVClub",
+  "version":          "1.0.0",
+  "homepage_url":     "https://github.com/DouweM/FollowMyTVClub",
+
+  "manifest_version": 2,
+
+  "description": "Show grades from The A.V. Club's TV Club on Followmy.tv.",
+
+  "content_scripts": [
+    {
+        "matches":  ["http://followmy.tv/dashboard", "http://followmy.tv/episode_list", "http://followmy.tv/show_list"],
+        "js":       ["vendor/underscore.js", "src/tvclub.js", "src/unwatched_list.js"],
+        "css":      ["style.css"]
+    }, 
+    {
+        "matches":  ["http://followmy.tv/episodes/*"],
+        "js":       ["vendor/underscore.js", "src/tvclub.js", "src/episode_page.js"]
+    }, 
+    {
+        "matches":  ["http://followmy.tv/shows/*"],
+        "exclude_matches": ["http://followmy.tv/shows/*/episodes*"],
+        "js":       ["vendor/underscore.js", "src/tvclub.js", "src/show_page.js"]
+    }, 
+    {
+        "matches":  ["http://followmy.tv/shows/*/episodes*"],
+        "js":       ["vendor/underscore.js", "src/tvclub.js", "src/show_episodes_list.js"],
+        "css":      ["style.css"]
+    }
+  ],
+
+  "permissions": [
+    "http://www.avclub.com/",
+    "storage"
+  ]
+}

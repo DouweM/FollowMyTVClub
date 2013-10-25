@@ -101,7 +101,12 @@ var TVClub = {
         var episodeLis = seasonUl.querySelectorAll("li");
         var episodeLi = _.find(episodeLis, function(episodeLi) {
           var h5 = episodeLi.querySelector("h5");
-          return h5.innerText.trim().match(new RegExp("^episode ([0-9]+-)?" + episodeNr + "(-[0-9]+)?", "i"));
+          var matches = h5.innerText.trim().match(/^episode ([0-9]+)(-([0-9]+))?$/i);
+          if (!matches) return false;
+
+          var fromNr  = parseInt(matches[1]);
+          var toNr    = parseInt(matches[3] || matches[1]);
+          return (fromNr <= episodeNr && episodeNr <= toNr);
         });
 
         if (!episodeLi) return callback(null);

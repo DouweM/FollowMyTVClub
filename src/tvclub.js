@@ -146,12 +146,17 @@ var TVClub = {
       _.each(updatedTimes, function(updatedTime, reviewInfoKey) {
         // Remove after one week.
         if (((new Date()).getTime() - updatedTime) > (7 * 24 * 60 * 60 * 1000)) {
+          delete updatedTimes[reviewInfoKey];
           keysToRemove.push(reviewInfoKey);
         }
       });
 
-      if (keysToRemove.length > 1) {
-        chrome.storage.remove(keysToRemove);
+      if (keysToRemove.length > 0) {
+        chrome.storage.local.remove(keysToRemove);
+
+        var storageItems = {};
+        storageItems[self.reviewInfosUpdatedKey] = updatedTimes;
+        chrome.storage.local.set(storageItems);
       }
     });
   }

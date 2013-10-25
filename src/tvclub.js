@@ -47,7 +47,7 @@ var TVClub = {
   },
 
   getShowInfo: function(name, callback) {
-    name = name.replace(/ \([0-9]{4}\)/, "");
+    name = name.replace(/ \([0-9]{4}\)$/, "");
     
     this.getAllShowInfos(function(showInfos) {
       if (!showInfos) return callback(null);

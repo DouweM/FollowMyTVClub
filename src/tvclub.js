@@ -30,7 +30,7 @@ var TVClub = {
         var showInfos = _.map(rawShowInfos, function(rawShowInfo) {
           return {
             name: rawShowInfo.name,
-            url:  "http://www.avclub.com/tvclub/tvshow/" + rawShowInfo.slug + "," + rawShowInfo.pk + "/"
+            url:  "http://www.avclub.com" + rawShowInfo.url
           }
         });
 
@@ -41,7 +41,7 @@ var TVClub = {
 
         callback(showInfos);
       }
-      xhr.open("GET", "http://www.avclub.com/tvclub/tvshow/all.json");
+      xhr.open("GET", "http://www.avclub.com/reviews/tvshows.json");
       xhr.send();
     });
   },
@@ -91,29 +91,23 @@ var TVClub = {
       var parseShowDocument = function(showDocument) {
         if (!showDocument) return callback(null);
 
-        var seasonUls = showDocument.querySelectorAll("ul[name='tvshowpage:seasons']");
-        var seasonUl = _.find(seasonUls, function(seasonUl) {
-          return (seasonUl.getAttribute("id") == ("season_" + seasonNr));
-        });
-
-        if (!seasonUl) return callback(null);
-
-        var episodeLis = seasonUl.querySelectorAll("li");
-        var episodeLi = _.find(episodeLis, function(episodeLi) {
-          var h5 = episodeLi.querySelector("h5");
-          var matches = h5.innerText.trim().match(/^episode ([0-9]+)(-([0-9]+))?$/i);
+        var episodeArticles = showDocument.querySelector(".article-list").querySelectorAll("article.item");
+        var episodeArticle = _.find(episodeArticles, function(episodeArticle) {
+          var meta = episodeArticle.querySelector(".article-meta");
+          var matches = meta.innerText.trim().match(/^Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)$/i);
           if (!matches) return false;
 
-          var fromNr  = parseInt(matches[1]);
-          var toNr    = parseInt(matches[3] || matches[1]);
-          return (fromNr <= episodeNr && episodeNr <= toNr);
+          var fromEpNr  = parseInt(matches[1]);
+          var toEpNr    = parseInt(matches[3] || matches[1]);
+          var seasNr    = parseInt(matches[4])
+          return (seasNr == seasonNr) && (fromEpNr <= episodeNr && episodeNr <= toEpNr);
         });
 
-        if (!episodeLi) return callback(null);
+        if (!episodeArticle) return callback(null);
 
         var reviewInfo = {
-          url:    "http://www.avclub.com" + episodeLi.querySelector("div.article-info a").getAttribute("href"),
-          grade:  episodeLi.querySelector("span.rating").innerText
+          url:    "http://www.avclub.com" + episodeArticle.querySelector("h1 a").getAttribute("href"),
+          grade:  episodeArticle.querySelector(".grade.letter").innerText
         }
 
         updatedTimes[reviewInfoKey] = (new Date()).getTime();

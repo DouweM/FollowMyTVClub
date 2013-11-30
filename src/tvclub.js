@@ -60,7 +60,7 @@ var TVClub = {
     });
   },
 
-  getShowDocument: function(name, callback) {
+  getShowSeasonDocument: function(name, seasonNr, callback) {
     this.getShowInfo(name, function(showInfo) {
       if (!showInfo) return callback(null);
 
@@ -73,7 +73,7 @@ var TVClub = {
         showDocument.body.innerHTML = this.responseText;
         callback(showDocument);
       }
-      xhr.open("GET", showInfo.url);
+      xhr.open("GET", showInfo.url + "?season=" + seasonNr);
       xhr.send();
     });
   },
@@ -129,7 +129,7 @@ var TVClub = {
         }
       }
       else {
-        self.getShowDocument(showName, parseShowDocument);
+        self.getShowSeasonDocument(showName, seasonNr, parseShowDocument);
       }
     });
   },

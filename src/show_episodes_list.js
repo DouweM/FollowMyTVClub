@@ -1,5 +1,7 @@
 var titleEl = document.querySelector("h2");
-var showName = titleEl.innerText.match(/^(.+) Season [0-9]+$/)[1];
+var titleMatches = titleEl.innerText.match(/^(.+) Season ([0-9]+)$/);
+var showName = titleMatches[1];
+var seasonNr = titleMatches[2];
 
 var showDocumentLoadCallbacks = [];
 var loadingShowDocument = false;
@@ -9,8 +11,9 @@ var episodesEls = document.querySelectorAll(".split-content .item-teaser");
 _.each(episodesEls, function(episodeEl) {
   var episodeId = episodeEl.querySelector(".info .epinr").innerText;
   var episodeNrs = episodeId.split("x");
+  var episodeNr = parseInt(episodeNrs[1]);
 
-  TVClub.getReviewInfo(showName, parseInt(episodeNrs[0]), parseInt(episodeNrs[1]), function(reviewInfo) {
+  TVClub.getReviewInfo(showName, seasonNr, episodeNr, function(reviewInfo) {
     var origRatingEl = episodeEl.querySelector(".rating-wrap");
 
     var ratingEl = document.createElement("div");
@@ -46,7 +49,7 @@ _.each(episodesEls, function(episodeEl) {
 
       if (!loadingShowDocument) {
         loadingShowDocument = true;
-        TVClub.getShowDocument(showName, function(showDocument) {
+        TVClub.getShowSeasonDocument(showName, seasonNr, function(showDocument) {
           loadedShowDocument = showDocument;
           loadingShowDocument = false;
 

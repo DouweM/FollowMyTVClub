@@ -94,13 +94,21 @@ var TVClub = {
         var episodeArticles = showDocument.querySelector(".article-list").querySelectorAll("article.item");
         var episodeArticle = _.find(episodeArticles, function(episodeArticle) {
           var meta = episodeArticle.querySelector(".article-meta");
-          var matches = meta.innerText.trim().match(/^Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)$/i);
-          if (!matches) return false;
+          var epInfos = meta.innerText.trim().match(/Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)/ig);
 
-          var fromEpNr  = parseInt(matches[1]);
-          var toEpNr    = parseInt(matches[3] || matches[1]);
-          var seasNr    = parseInt(matches[4])
-          return (seasNr == seasonNr) && (fromEpNr <= episodeNr && episodeNr <= toEpNr);
+          var found = false;
+          _.each(epInfos, function(epInfo) {
+            if (found) return;
+
+            var matches = epInfo.match(/Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)/i);
+            
+            var fromEpNr  = parseInt(matches[1]);
+            var toEpNr    = parseInt(matches[3] || matches[1]);
+            var seasNr    = parseInt(matches[4]);
+
+            found = (seasNr == seasonNr) && (fromEpNr <= episodeNr && episodeNr <= toEpNr);
+          });
+          return found;
         });
 
         if (!episodeArticle) return callback(null);

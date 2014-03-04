@@ -93,22 +93,12 @@ var TVClub = {
 
         var episodeArticles = showDocument.querySelector(".article-list").querySelectorAll("article.item");
         var episodeArticle = _.find(episodeArticles, function(episodeArticle) {
-          var meta = episodeArticle.querySelector(".article-meta");
-          var epInfos = meta.innerText.trim().match(/Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)/ig);
+          // Currently doesn't support reviews for multiple episodes :(
+          var seasonEpisode = episodeArticle.querySelector(".season-episode");
+          var seasNr = parseInt(seasonEpisode.querySelector(".season").innerText.match(/ ([0-9]+)$/)[1]);
+          var epNr = parseInt(seasonEpisode.querySelector(".episode").innerText.match(/ ([0-9]+)$/)[1]);
 
-          var found = false;
-          _.each(epInfos, function(epInfo) {
-            if (found) return;
-
-            var matches = epInfo.match(/Ep. ([0-9]+)(-([0-9]+))?, Season ([0-9]+)/i);
-            
-            var fromEpNr  = parseInt(matches[1]);
-            var toEpNr    = parseInt(matches[3] || matches[1]);
-            var seasNr    = parseInt(matches[4]);
-
-            found = (seasNr == seasonNr) && (fromEpNr <= episodeNr && episodeNr <= toEpNr);
-          });
-          return found;
+          return seasNr == seasonNr && epNr == episodeNr;
         });
 
         if (!episodeArticle) return callback(null);
